@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-center">
+    <h2 class="text-3xl font-bold text-gray-800">My Service Requests</h2>
+    <a href="{% url 'create-request' %}" class="btn btn-primary">Create New Request</a>
+</div>
+
+<div class="card">
+    <form method="get" class="flex items-center gap-4">
+        <label for="status" class="font-medium">Filter by Status:</label>
+        <select name="status" id="status" class="form-input w-auto" onchange="this.form.submit()">
+            <option value="">All</option>
+            <option value="PEN" {% if status_filter == 'PEN' %}selected{% endif %}>Pending</option>
+            <option value="PRO" {% if status_filter == 'PRO' %}selected{% endif %}>In Progress</option>
+            <option value="RES" {% if status_filter == 'RES' %}selected{% endif %}>Resolved</option>
+        </select>
+    </form>
+</div>
+
+{% for req in page_obj %}
+<div class="card">
+    <div class="flex justify-between items-start mb-4">
+        <h3 class="text-xl font-semibold text-blue-600">{{ req.get_request_type_display }}</h3>
+        <span class="px-3 py-1 rounded-full text-sm {% if req.status == 'PEN' %}bg-yellow-100 text-yellow-800{% elif req.status == 'PRO' %}bg-blue-100 text-blue-800{% else %}bg-green-100 text-green-800{% endif %}">
+            {{ req.get_status_display }}
+        </span>
+    </div>
+    <div class="grid grid-cols-2 gap-4 text-gray-600">
+        <p><span class="font-medium">Submitted:</span> {{ req.submitted_date|date:"M d, Y H:i" }}</p>
+        {% if req.resolved_date %}
+            <p><span class="font-medium">Resolved:</span> {{ req.resolved_date|date:"M d, Y H:i" }}</p>
+        {% endif %}
+        <p><span class="font-medium">Priority:</span> {{ req.get_priority_display }}</p>
+        <p><span class="font-medium">Details:</span> {{ req.details }}</p>
+        {% if req.comments %}
+            <p class="col-span-2"><span class="font-medium">Comments:</span> {{ req.comments }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+<div class="flex justify-center gap-4 mt-6">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-secondary">Previous</a>
+    {% endif %}
+    <span class="px-4 py-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-secondary">Next</a>
+    {% endif %}
+</div>
+{% endblock %}

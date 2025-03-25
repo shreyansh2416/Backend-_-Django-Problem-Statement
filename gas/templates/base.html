@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Gas Utility Services{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .btn {
+        @apply px-4 py-2 rounded transition duration-200;
+      }
+      .btn-primary {
+        @apply bg-blue-500 text-white hover:bg-blue-600;
+      }
+      .btn-secondary {
+        @apply bg-gray-500 text-white hover:bg-gray-600;
+      }
+      .card {
+        @apply bg-white rounded-lg shadow-md p-6 mb-4;
+      }
+      .form-input {
+        @apply w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <nav class="bg-blue-600 text-white shadow-lg mb-8">
+      <div class="container mx-auto px-4 py-3">
+        <div class="flex justify-between items-center">
+          <a href="/" class="text-xl font-bold">Gas Utility</a>
+          {% if user.is_authenticated %}
+          <div>
+            <span class="mr-4">Welcome, {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="hover:text-gray-200">Logout</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+    <div class="container mx-auto px-4">{% block content %}{% endblock %}</div>
+  </body>
+</html>
